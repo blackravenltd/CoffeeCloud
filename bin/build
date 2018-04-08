@@ -1,0 +1,3 @@
+#/bin/bash
+bin/compile
+cfn-lint validate build/staging.json

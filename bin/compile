@@ -1,0 +1,81 @@
+#!/usr/bin/env coffee
+
+_ = require 'underscore'
+path = require 'path'
+fs = require 'fs'
+deepmerge = require 'deepmerge'
+YAML = require('yamljs');
+
+build = require path.resolve(__dirname,'../package.json')
+ 
+walk = (dir, f_match, f_visit) ->
+  _walk = (dir) ->
+    return if fs.existsSync(dir+'/.ignore') 
+    for filename in fs.readdirSync dir
+      filename = dir + '/' + filename
+      f_visit(filename) if f_match filename
+      _walk(filename) if fs.statSync(filename).isDirectory()
+  _walk(dir, dir)
+
+deleteFolderRecursive = (path) ->
+  if fs.existsSync(path)
+    fs.readdirSync(path).forEach (file) ->
+      curPath = path + '/' + file
+      if fs.statSync(curPath).isDirectory()
+        # recurse
+        deleteFolderRecursive curPath
+      else
+        # delete file
+        fs.unlinkSync curPath
+      return
+    fs.rmdirSync path
+  return
+ 
+console.log("CoffeeCloud #{build.version}")
+console.log("------------------")
+
+matcher = (fn) -> fn.match /\/[^\_][a-zA-Z0-9\_-]+\.coffee$/
+matcherCommon = (fn) -> fn.match /\/\_[a-zA-Z0-9\_-]+\.coffee$/
+
+console.log "Loading Helpers..."
+
+helpers = {}
+walk(path.resolve(process.cwd(),'helpers'), matcher, (filename) ->
+  helpers = deepmerge(helpers, require(filename) || {})
+)
+
+console.log "Loading Common Environment..."
+
+commonenv = {}
+walk(path.resolve(process.cwd(),'environments'), matcherCommon, (filename) ->
+  console.log "- #{path.basename(filename)}"
+  commonenv = deepmerge(commonenv, require(filename) || {})
+)
+
+console.log("Cleaning Previous Build")
+deleteFolderRecursive('build')
+fs.mkdirSync('build')
+
+walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
+
+  templatename = 'build/'+path.basename(envfilename).slice(0,-7)
+  env = deepmerge(commonenv, require(envfilename))
+  console.log("Compiling #{env.Name} environment to #{templatename}...")
+
+  template = {}
+
+  walk(path.resolve(process.cwd(),'cloudformation'), matcher, (filename) ->
+    sourceFile = require(filename)
+    if sourceFile.CloudFormation?
+      # console.log "- #{sourceFile.Name}"
+      template = deepmerge(template, sourceFile.CloudFormation(env, helpers) || {})
+  )
+
+  fs.writeFileSync(path.resolve(process.cwd(),templatename+'.json'), JSON.stringify(template, null, 2))
+  fs.writeFileSync(path.resolve(process.cwd(),templatename+'.yaml'), YAML.stringify(template, 2))
+)
+
+console.log("Done.")
+
+
+
