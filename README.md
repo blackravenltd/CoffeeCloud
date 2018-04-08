@@ -109,6 +109,9 @@ Each `.coffee` file in the `helpers` directory and its subdirectories represents
 
 Multiple helpers can be defined in each file.
 
+### Ignoring Directories
+You can add an empty `.ignore` file in a directory to skip it and all its subdirectories during a build - this is useful for partial stacks, or when you're testing only a subset of your infrastructure.
+
 ## Hints and Tips
 
 * Convert AWS example snippets and existing AWS Cloudformation templates into Coffeescript using the excellent [js2.coffee](http://js2.coffee/).
