@@ -10,6 +10,7 @@ build = require path.resolve(__dirname,'../package.json')
  
 walk = (dir, f_match, f_visit) ->
   _walk = (dir) ->
+    return if fs.existsSync(dir+'/.ignore') 
     for filename in fs.readdirSync dir
       filename = dir + '/' + filename
       f_visit(filename) if f_match filename
@@ -29,7 +30,13 @@ deleteFolderRecursive = (path) ->
       return
     fs.rmdirSync path
   return
- 
+
+prefixResourceNames = (template, prefix) ->
+  output = {}
+  for k, v of template.Resources
+    output[prefix+k] = v
+  template.Resources = output
+
 console.log("CoffeeCloud #{build.version}")
 console.log("------------------")
 
@@ -40,7 +47,6 @@ console.log "Loading Helpers..."
 
 helpers = {}
 walk(path.resolve(process.cwd(),'helpers'), matcher, (filename) ->
-  console.log "- #{path.basename(filename)}"
   helpers = deepmerge(helpers, require(filename) || {})
 )
 
@@ -62,13 +68,18 @@ walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
   env = deepmerge(commonenv, require(envfilename))
   console.log("Compiling #{env.Name} environment to #{templatename}...")
 
-  template = {}
+  envHelpers = {}
+  envHelpers[k] = v.bind(env) for k, v of helpers
 
+  template = {}
   walk(path.resolve(process.cwd(),'cloudformation'), matcher, (filename) ->
     sourceFile = require(filename)
     if sourceFile.CloudFormation?
       # console.log "- #{sourceFile.Name}"
-      template = deepmerge(template, sourceFile.CloudFormation(env, helpers) || {})
+      scfile = sourceFile.CloudFormation(env, envHelpers)
+      if scfile?
+        prefixResourceNames(scfile,env.LogicalNamePrefix)
+        template = deepmerge(template, scfile)
   )
 
   fs.writeFileSync(path.resolve(process.cwd(),templatename+'.json'), JSON.stringify(template, null, 2))
