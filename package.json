@@ -12,10 +12,10 @@
   "github": "http://github.com/tomdionysus/CoffeeCloud",
   "private": false,
   "dependencies": {
-    "cfn-lint": "^1.6.0",
+    "cfn-lint": "^1.9.7",
     "coffee-script": "1.10.0",
     "deepmerge": "0.2.10",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.5.1",
     "underscore": "1.8.3",
     "yamljs": "^0.3.0"
   },
