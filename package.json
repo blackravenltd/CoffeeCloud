@@ -23,9 +23,9 @@
     "url": "http://github.com/tomdionysus/CoffeeCloud"
   },
   "bin": {
-    "coffeecloud": "bin/compile.coffee"
+    "coffeecloud": "./bin/coffeecloud"
   },
   "scripts": {
-    "build": "bin/compile && node_modules/cfn-lint/lib/index.js build/*"
+    "build": "coffeecloud && node_modules/cfn-lint/lib/index.js build/*"
   }
 }
