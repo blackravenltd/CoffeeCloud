@@ -1,59 +1,59 @@
 module.exports =
   Name: "Data Tier"
-  CloudFormation: (params) ->
+  CloudFormation: (env, h) ->
     Resources:
       # Route Table & Route
 
-      TestDataRouteTable:
+      DataRouteTable:
         Type: 'AWS::EC2::RouteTable'
         Properties:
-          VpcId: Ref: 'TestVPC'
-          Tags: [ { Key: 'Name', Value: 'TestNACL' } ]
+          VpcId: Ref: h.ref('VPC')
+          Tags: [ { Key: 'Name', Value: 'NACL'} ]
 
       # Subnets 
       
-      TestDataSubnetA:
+      DataSubnetA:
         Type: 'AWS::EC2::Subnet'
         Properties:
-          VpcId:                Ref: 'TestVPC'
-          AvailabilityZone:     params.AvailibilityZones[0]
-          CidrBlock:            params.DataTierCIDR[0]
+          VpcId:                Ref: h.ref('VPC')
+          AvailabilityZone:     env.AvailibilityZones[0]
+          CidrBlock:            env.DataTierCIDR[0]
           MapPublicIpOnLaunch:  false
-          Tags: [ { Key: 'Name', Value: 'Test Data A' } ]
+          Tags: [ { Key: 'Name', Value: 'Data A'} ]
 
-      TestDataSubnetB:
+      DataSubnetB:
         Type: 'AWS::EC2::Subnet'
         Properties:
-          VpcId:                Ref: 'TestVPC'
-          AvailabilityZone:     params.AvailibilityZones[1]
-          CidrBlock:            params.DataTierCIDR[1]
+          VpcId:                Ref: h.ref('VPC')
+          AvailabilityZone:     env.AvailibilityZones[1]
+          CidrBlock:            env.DataTierCIDR[1]
           MapPublicIpOnLaunch: false
-          Tags: [ { Key: 'Name', Value: 'Test Data B' } ]
+          Tags: [ { Key: 'Name', Value: 'Data B'} ]
 
       # Subnet ACL Associations
 
-      TestDataSubnetANetworkACLAssociation:
+      DataSubnetANetworkACLAssociation:
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: 'TestDataSubnetA'
-          NetworkAclId: Ref: 'TestNACL'
+          SubnetId:     Ref: h.ref('DataSubnetA')
+          NetworkAclId: Ref: h.ref('NACL')
 
-      TestDataSubnetBNetworkACLAssociation:
+      DataSubnetBNetworkACLAssociation:
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: 'TestDataSubnetB'
-          NetworkAclId: Ref: 'TestNACL'
+          SubnetId:     Ref: h.ref('DataSubnetB')
+          NetworkAclId: Ref: h.ref('NACL')
 
       # Subnet Route Table Associations
 
-      TestDataSubnetARouteTableAssociation:
+      DataSubnetARouteTableAssociation:
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: 'TestDataSubnetA'
-          RouteTableId: Ref: 'TestDataRouteTable'
+          SubnetId:     Ref: h.ref('DataSubnetA')
+          RouteTableId: Ref: h.ref('DataRouteTable')
 
-      TestDataSubnetBRouteTableAssociation:
+      DataSubnetBRouteTableAssociation:
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: 'TestDataSubnetB'
-          RouteTableId: Ref: 'TestDataRouteTable'
+          SubnetId:     Ref: h.ref('DataSubnetB')
+          RouteTableId: Ref: h.ref('DataRouteTable')

@@ -1,67 +1,65 @@
 module.exports =
   Name: "Web Tier"
-  CloudFormation: (params) ->
+  CloudFormation: (env,h) ->
     Resources:
       # Route Table & Route
 
-      TestWebRouteTable:
+      WebRouteTable:
         Type: 'AWS::EC2::RouteTable'
         Properties:
-          VpcId: Ref: 'TestVPC'
-          Tags: [ { Key: 'Name', Value: 'TestNACL' } ]
+          VpcId: Ref: h.ref('VPC')
+          Tags: [ { Key: 'Name', Value: 'NACL'} ]
 
-      TestWebRoute:
+      WebRoute:
         Type: 'AWS::EC2::Route'
         Properties:
-          RouteTableId:         Ref: 'TestWebRouteTable'
+          RouteTableId:         Ref: h.ref('WebRouteTable')
           DestinationCidrBlock: '0.0.0.0/0'
-          GatewayId:            Ref: 'TestInternetGateway'
+          GatewayId:            Ref: h.ref('InternetGateway')
 
       # Subnets
-
-      TestWebSubnetA:
+      WebSubnetA:
         Type: 'AWS::EC2::Subnet'
         Properties:
-          VpcId:                Ref: 'TestVPC'
-          AvailabilityZone:     params.AvailibilityZones[0]
-          CidrBlock:            params.WebTierCIDR[0]
+          VpcId:                Ref: h.ref('VPC')
+          AvailabilityZone:     env.AvailibilityZones[0]
+          CidrBlock:            env.WebTierCIDR[0]
           MapPublicIpOnLaunch:  false
-          Tags: [ { Key: 'Name', Value: 'Test Web Subnet A'} ]
+          Tags: [ { Key: 'Name', Value: 'Web Subnet A'} ]
 
-      TestWebSubnetB:
+      WebSubnetB:
         Type: 'AWS::EC2::Subnet'
         Properties:
-          VpcId:                Ref: 'TestVPC'
-          AvailabilityZone:     params.AvailibilityZones[1]
-          CidrBlock:            params.WebTierCIDR[1]
+          VpcId:                Ref: h.ref('VPC')
+          AvailabilityZone:     env.AvailibilityZones[1]
+          CidrBlock:            env.WebTierCIDR[1]
           MapPublicIpOnLaunch:  false
-          Tags: [ { Key: 'Name', Value: 'Test Web Subnet B' } ]
+          Tags: [ { Key: 'Name', Value: 'Web Subnet B'} ]
 
       # Subnet ACL Associations
-
-      TestWebSubnetANetworkACLAssociation:
+      WebSubnetANetworkACLAssociation:
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: 'TestWebSubnetA'
-          NetworkAclId: Ref: 'TestNACL'
+          SubnetId:     Ref: h.ref('WebSubnetA')
+          NetworkAclId: Ref: h.ref('NACL')
 
-      TestWebSubnetBNetworkACLAssociation:
+      WebSubnetBNetworkACLAssociation:
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: 'TestWebSubnetB'
-          NetworkAclId: Ref: 'TestNACL'
+          SubnetId:     Ref: h.ref('WebSubnetB')
+          NetworkAclId: Ref: h.ref('NACL')
 
       # Subnet Route Table Associations
 
-      TestWebSubnetARouteTableAssociation:
+      WebSubnetARouteTableAssociation:
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: 'TestWebSubnetA'
-          RouteTableId: Ref: 'TestWebRouteTable'
+          SubnetId:     Ref: h.ref('WebSubnetA')
+          RouteTableId: Ref: h.ref('WebRouteTable')
 
-      TestWebSubnetBRouteTableAssociation:
+      WebSubnetBRouteTableAssociation:
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: 'TestWebSubnetB'
-          RouteTableId: Ref: 'TestWebRouteTable'
+          SubnetId:     Ref: h.ref('WebSubnetB')
+          RouteTableId: Ref: h.ref('WebRouteTable')
 

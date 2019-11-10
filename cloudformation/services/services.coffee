@@ -1,59 +1,59 @@
 module.exports =
   Name: "Services Tier"
-  CloudFormation: (params) ->
+  CloudFormation: (env,h) ->
     Resources:
       # Route Table & Route
 
-      TestServicesRouteTable:
+      ServicesRouteTable:
         Type: 'AWS::EC2::RouteTable'
         Properties:
-          VpcId: Ref: 'TestVPC'
-          Tags: [ { Key: 'Name', Value: 'TestNACL' } ]
+          VpcId: Ref: h.ref('VPC')
+          Tags: [ { Key: 'Name', Value: 'NACL'} ]
 
       # Subnets
       
-      TestServicesSubnetA:
+      ServicesSubnetA:
         Type: 'AWS::EC2::Subnet'
         Properties:
-          VpcId:                Ref: 'TestVPC'
-          AvailabilityZone:     params.AvailibilityZones[0]
-          CidrBlock:            params.ServicesTierCIDR[0]
+          VpcId:                Ref: h.ref('VPC')
+          AvailabilityZone:     env.AvailibilityZones[0]
+          CidrBlock:            env.ServicesTierCIDR[0]
           MapPublicIpOnLaunch:  false
-          Tags: [ { Key: 'Name', Value: 'Test Services A' } ]
+          Tags: [ { Key: 'Name', Value: 'Services A'} ]
 
-      TestServicesSubnetB:
+      ServicesSubnetB:
         Type: 'AWS::EC2::Subnet'
         Properties:
-          VpcId: Ref: 'TestVPC'
-          AvailabilityZone:     params.AvailibilityZones[1]
-          CidrBlock:            params.ServicesTierCIDR[1]
+          VpcId: Ref: h.ref('VPC')
+          AvailabilityZone:     env.AvailibilityZones[1]
+          CidrBlock:            env.ServicesTierCIDR[1]
           MapPublicIpOnLaunch: false
-          Tags: [ { Key: 'Name', Value: 'Test Services B' } ]
+          Tags: [ { Key: 'Name', Value: 'Services B'} ]
 
       # Subnet ACL Associations
 
-      TestServicesSubnetANetworkACLAssociation:
+      ServicesSubnetANetworkACLAssociation:
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: 'TestServicesSubnetA'
-          NetworkAclId: Ref: 'TestNACL'
+          SubnetId:     Ref: h.ref('ServicesSubnetA')
+          NetworkAclId: Ref: h.ref('NACL')
 
-      TestServicesSubnetBNetworkACLAssociation:
+      ServicesSubnetBNetworkACLAssociation:
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: 'TestServicesSubnetB'
-          NetworkAclId: Ref: 'TestNACL'
+          SubnetId:     Ref: h.ref('ServicesSubnetB')
+          NetworkAclId: Ref: h.ref('NACL')
 
       # Subnet Route Table Associations
 
-      TestServicesSubnetARouteTableAssociation:
+      ServicesSubnetARouteTableAssociation:
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: 'TestServicesSubnetA'
-          RouteTableId: Ref: 'TestServicesRouteTable'
+          SubnetId:     Ref: h.ref('ServicesSubnetA')
+          RouteTableId: Ref: h.ref('ServicesRouteTable')
 
-      TestServicesSubnetBRouteTableAssociation:
+      ServicesSubnetBRouteTableAssociation:
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: 'TestServicesSubnetB'
-          RouteTableId: Ref: 'TestServicesRouteTable'
+          SubnetId:     Ref: h.ref('ServicesSubnetB')
+          RouteTableId: Ref: h.ref('ServicesRouteTable')

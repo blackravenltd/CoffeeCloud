@@ -1,17 +1,17 @@
 module.exports =
-  Name: "Internet Gateway"
-  CloudFormation: (params) ->
+  Name: 'Internet Gateway'
+  CloudFormation: (env,h) ->
     Resources:
       # The Environment Internet Gateway.
-      TestInternetGateway:
-        Type: "AWS::EC2::InternetGateway"
+      InternetGateway:
+        Type: 'AWS::EC2::InternetGateway'
         Properties:
-          Tags: [ { Key: 'Name', Value: 'Test Internet Gateway' } ]
+          Tags: [ { Key: 'Name', Value: 'Internet Gateway'} ]
 
       # Attach the Internet Gateway to the VPC.
-      TestInternetGatewayVPCAttachment:
-        Type: "AWS::EC2::VPCGatewayAttachment"
+      InternetGatewayVPCAttachment:
+        Type: 'AWS::EC2::VPCGatewayAttachment'
         Properties:
-          InternetGatewayId:  Ref: "TestInternetGateway"
-          VpcId:              Ref: "TestVPC"
+          InternetGatewayId:  Ref: h.ref('InternetGateway')
+          VpcId:              Ref: h.ref('VPC')
 

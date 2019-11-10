@@ -1,13 +1,13 @@
 module.exports =
   Name: "VPC"
-  CloudFormation: (params) ->
+  CloudFormation: (env) ->
     Resources:
       # The Environment VPC.
-      TestVPC:
+      VPC:
         Type: 'AWS::EC2::VPC'
         Properties:
-          CidrBlock:          params.VPCCIDR
+          CidrBlock:          env.VPCCIDR
           EnableDnsSupport:   true
           EnableDnsHostnames: true
           InstanceTenancy:    'default'
-          Tags: [ { Key: 'Name', Value: 'Test VPC' } ]
+          Tags: [ { Key: 'Name', Value: 'VPC'} ]

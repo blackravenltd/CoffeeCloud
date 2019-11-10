@@ -87,6 +87,3 @@ walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
 )
 
 console.log("Done.")
-
-
-
