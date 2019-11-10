@@ -11,22 +11,24 @@ CoffeeCloud allows you to write [AWS CloudFormation](https://aws.amazon.com/clou
 
 ## Installation
 
-Requires `nodejs` and `coffee-script`.
+Requires `nodejs`, `coffee-script` and Python `cfn-lint`.
 
 ### Linux (Ubuntu)
 
 ```bash
-apt-get install nodejs
+apt-get install nodejs python3 python3-pip
 npm install -g coffee-script
 npm install && npm link
+pip install cfn-lint
 ```
 
 ### MacOSX (Homebrew)
 
 ```bash
-brew install nodejs
+brew install nodejs python3
 npm install -g coffee-script
 npm install && npm link
+pip install cfn-lint
 ```
 
 ## Building Templates
