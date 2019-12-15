@@ -14,7 +14,7 @@
   "dependencies": {
     "coffee-script": "1.10.0",
     "deepmerge": "0.2.10",
-    "handlebars": "^4.5.1",
+    "handlebars": "^4.5.3",
     "underscore": "1.8.3",
     "yamljs": "^0.3.0"
   },
