@@ -1,5 +1,6 @@
 module.exports =
   Name: "Public Network"
+  Stack: 'dmz'
   CloudFormation: (env, h) ->
 
     template =

@@ -2,7 +2,7 @@
   "name": "CoffeeCloud",
   "description": "CoffeeScript CloudFormation Templates",
   "author": "Tom Cully <tom@blackraven.co.nz>",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "keywords": [
     "coffee-script",
     "aws",

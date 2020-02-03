@@ -114,6 +114,41 @@ Multiple helpers can be defined in each file.
 ### Ignoring Directories
 You can add an empty `.ignore` file in a directory to skip it and all its subdirectories during a build - this is useful for partial stacks, or when you're testing only a subset of your infrastructure.
 
+### Stacks
+CoffeeCloud can build multiple stacks per environment. The substack filename will be `<environment>_<stack>.[json|yaml]`. To assign a file to a specific stack, add the `Stack` parameter to the file as follows:
+
+```coffeescript
+module.exports =
+  Name: "VPC"
+  Stack: 'network'
+  CloudFormation: (params) ->
+    Resources:
+
+      # The Environment VPC.
+      
+      TestVPC:
+        Type: 'AWS::EC2::VPC'
+        Properties:
+          CidrBlock:          params.VPCCIDR
+          EnableDnsSupport:   true
+          EnableDnsHostnames: true
+          InstanceTenancy:    'default'
+          Tags: [ { Key: 'Name', Value: 'Test VPC' } ]
+
+```
+
+To Include a file in all substacks, set the `IncludeAll` parameter to true, as follows:
+
+```
+module.exports =
+  Name: "AWS Template Version 2010-09-09"
+  IncludeAll: true
+  CloudFormation: (env, helpers) ->
+    AWSTemplateFormatVersion: "2010-09-09"
+```
+
+This is common in the ubiqutious `aws.coffee`, as per the included example stack.
+
 ## Hints and Tips
 
 * Convert AWS example snippets and existing AWS Cloudformation templates into Coffeescript using the excellent [js2.coffee](http://js2.coffee/).

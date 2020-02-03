@@ -1,5 +1,6 @@
 module.exports =
   Name: "Services Tier"
+  Stack: 'services'
   CloudFormation: (env,h) ->
     Resources:
       # Route Table & Route

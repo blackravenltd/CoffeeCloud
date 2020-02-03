@@ -1,5 +1,6 @@
 module.exports =
   Name: 'Internet Gateway'
+  Stack: 'network'
   CloudFormation: (env,h) ->
     Resources:
       # The Environment Internet Gateway.
