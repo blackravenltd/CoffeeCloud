@@ -19,7 +19,7 @@ module.exports =
           Protocol: -1
           RuleAction: 'allow'
           Egress: true
-          CidrBlock: env.VPCCIDR
+          CidrBlock: env.PublicCIDR
           Icmp:
             Code: -1
             Type: -1
@@ -33,7 +33,7 @@ module.exports =
           Protocol: -1
           RuleAction: 'allow'
           Egress: false
-          CidrBlock: env.VPCCIDR
+          CidrBlock: env.PublicCIDR
           Icmp:
             Code: -1
             Type: -1
