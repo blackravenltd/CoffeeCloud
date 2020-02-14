@@ -59,7 +59,7 @@ module.exports =
 
 An environment module **must** declare the `Name` property in order to be processed.
 
-One CloudFormation `<envname>.template` will be build for each environment.
+One CloudFormation `<envname>.yaml` and `<envname.json` will be build for each environment.
 
 ### Environment Common Component(s)
 
@@ -126,5 +126,3 @@ Contributions, critique, bug notices and fixes are very welcome. Please use gith
 
 The CoffeeCloud project is committed to the [Contributor Covenant](http://contributor-covenant.org). Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before making any contributions or comments.
 
-
-	
