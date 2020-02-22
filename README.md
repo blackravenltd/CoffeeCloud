@@ -88,23 +88,21 @@ Each `.coffee` file in the `cloudformation` directory and its subdirectories rep
 ```coffeescript
 module.exports =
   Name: "VPC"
-  CloudFormation: (params) ->
+  CloudFormation: (environment, helpers) ->
     Resources:
 
-      # The Environment VPC.
+      # Virtual pPrivate Cloud
       
       TestVPC:
         Type: 'AWS::EC2::VPC'
         Properties:
-          CidrBlock:          params.VPCCIDR
+          CidrBlock:          environment.VPCCIDR
           EnableDnsSupport:   true
           EnableDnsHostnames: true
           InstanceTenancy:    'default'
-          Tags: [ { Key: 'Name', Value: 'Test VPC' } ]
+          Tags: [ { Key: 'Name', Value: environment.Name+' VPC' } ]
 
 ```
-
- A `Name` property can also be defined on the module, which is used only for the logging output of the compiler.
 
 ### Helpers
 Each `.coffee` file in the `helpers` directory and its subdirectories represents part of the helpers object supplied to each `CloudFormation(env, helpers)` call. Here you can define helper functions.
@@ -114,8 +112,78 @@ Multiple helpers can be defined in each file.
 ### Ignoring Directories
 You can add an empty `.ignore` file in a directory to skip it and all its subdirectories during a build - this is useful for partial stacks, or when you're testing only a subset of your infrastructure.
 
+### Logical Name Prefixing & The `ref` helper
+
+In orde to avoid collisions when using multiple enviromments in a single AWS account, if the environment file contains a `LogicalNamePrefix` key, each resource in the CF topology will have its logical name prefixed with that value. For example, an environment file such as the following:
+
+```
+module.exports = 
+  Name: 'Test Environment'
+  Description: 'Test CloudFormation Template for DEV Environment, AWS ap-southeast-2'
+  LogicalNamePrefix:    'Test'
+
+  VPCCIDR: '10.0.0.0/16'
+  ...
+```
+
+This file will cause all resources created in the corresponding CF template to have their logical names prefixed with `Test`, e.g. this IGW definition:
+
+```
+module.exports =
+  Name: 'Internet Gateway'
+  CloudFormation: (env,h) ->
+    Resources:
+      # The Environment Internet Gateway.
+      InternetGateway:
+        Type: 'AWS::EC2::InternetGateway'
+        Properties:
+          Tags: [ { Key: 'Name', Value: 'Internet Gateway'} ]
+
+      # Attach the Internet Gateway to the VPC.
+      InternetGatewayVPCAttachment:
+        Type: 'AWS::EC2::VPCGatewayAttachment'
+        Properties:
+          InternetGatewayId:  Ref: h.ref('InternetGateway')
+          VpcId:              Ref: h.ref('VPC')
+```
+
+When processed, the actual definitions will be named `TestInternetGateway` and `InternetGatewayVPCAttachment`:
+
+```
+    ...
+    "TestInternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Internet Gateway"
+          }
+        ]
+      }
+    },
+    "TestInternetGatewayVPCAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "TestInternetGateway"
+        },
+        "VpcId": {
+          "Ref": "TestVPC"
+        }
+      }
+    },
+    ...
+```
+
+#### The 'ref' Helper
+
+Due to this behaviour, `Ref`, `Fn::GetAtt` and other CloudFormation reference constructs need to be used with the `h.ref(<name>)` helper, as shown above in the `InternetGateway` example. This helper prefixes references from the current environment file so that references will resolve properly.
+
 ### Stacks
-CoffeeCloud can build multiple stacks per environment. The substack filename will be `<environment>_<stack>.[json|yaml]`. To assign a file to a specific stack, add the `Stack` parameter to the file as follows:
+CoffeeCloud can build multiple stacks per environment - that is, multiple CloudFormation templates intended to work together as components of a larger system, instead of one CloudFormation template that contains all the components of a system. 
+
+This feature is enabled by adding the `Stack` parameter to topology definition files as follows: 
 
 ```coffeescript
 module.exports =
@@ -137,7 +205,9 @@ module.exports =
 
 ```
 
-To Include a file in all substacks, set the `IncludeAll` parameter to true, as follows:
+Substacks are outputted as seperate files, all filenames will be `<environment>_<stack>.[json|yaml]`, each file will contain all the definitions marked with that stack name. All definitions not marked with `Stack` will be outputted in the standard `<environment>.[json|yaml]`.
+
+To include a file in all substacks, set the `IncludeAll` parameter to true, as follows:
 
 ```
 module.exports =
@@ -151,7 +221,8 @@ This is common in the ubiqutious `aws.coffee`, as per the included example stack
 
 ## Hints and Tips
 
-* Convert AWS example snippets and existing AWS Cloudformation templates into Coffeescript using the excellent [js2.coffee](http://js2.coffee/).
+* Convert AWS example snippets and existing AWS Cloudformation templates into CoffeeScript using the excellent [js2.coffee](http://js2.coffee/).
+* The AWS Cloudformation documentation includes YAML examples - YAML is very similar to CoffeeScript object definition and can be copy-pasted into templates with little modification.
 
 ## Contributing
 
