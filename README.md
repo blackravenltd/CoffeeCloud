@@ -116,7 +116,7 @@ You can add an empty `.ignore` file in a directory to skip it and all its subdir
 
 In order to avoid collisions when using multiple enviromments in a single AWS account, if the environment file contains a `LogicalNamePrefix` key, each resource in the CF topology will have its logical name prefixed with that value. For example, an environment file such as the following:
 
-```
+```coffeescript
 module.exports = 
   Name: 'Test Environment'
   Description: 'Test CloudFormation Template for DEV Environment, AWS ap-southeast-2'
@@ -128,7 +128,7 @@ module.exports =
 
 This file will cause all resources created in the corresponding CF template to have their logical names prefixed with `Test`, e.g. this IGW definition:
 
-```
+```coffeescript
 module.exports =
   Name: 'Internet Gateway'
   CloudFormation: (env,h) ->
@@ -149,7 +149,7 @@ module.exports =
 
 When processed, the actual definitions will be named `TestInternetGateway` and `InternetGatewayVPCAttachment`:
 
-```
+```json
     ...
     "TestInternetGateway": {
       "Type": "AWS::EC2::InternetGateway",
@@ -209,7 +209,7 @@ Substacks are outputted as seperate files, all filenames will be `<environment>_
 
 To include a file in all substacks, set the `IncludeAll` parameter to true, as follows:
 
-```
+```coffeescript
 module.exports =
   Name: "AWS Template Version 2010-09-09"
   IncludeAll: true
