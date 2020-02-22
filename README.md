@@ -114,7 +114,7 @@ You can add an empty `.ignore` file in a directory to skip it and all its subdir
 
 ### Logical Name Prefixing & The `ref` helper
 
-In orde to avoid collisions when using multiple enviromments in a single AWS account, if the environment file contains a `LogicalNamePrefix` key, each resource in the CF topology will have its logical name prefixed with that value. For example, an environment file such as the following:
+In order to avoid collisions when using multiple enviromments in a single AWS account, if the environment file contains a `LogicalNamePrefix` key, each resource in the CF topology will have its logical name prefixed with that value. For example, an environment file such as the following:
 
 ```
 module.exports = 
