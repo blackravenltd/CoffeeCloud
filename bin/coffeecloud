@@ -62,11 +62,13 @@ console.log("Cleaning Previous Build")
 deleteFolderRecursive('build')
 fs.mkdirSync('build')
 
-defaultstack = {}
-stacks = {}
-includeAll = {}
+
 
 walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
+
+  defaultstack = {}
+  stacks = {}
+  includeAll = {}
 
   templatename = 'build/'+path.basename(envfilename).slice(0,-7)
   env = deepmerge(commonenv, require(envfilename))
