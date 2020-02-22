@@ -4,7 +4,7 @@ _ = require 'underscore'
 path = require 'path'
 fs = require 'fs'
 deepmerge = require 'deepmerge'
-YAML = require('yamljs');
+YAML = require('yamljs')
 
 build = require path.resolve(__dirname,'../package.json')
  
@@ -62,7 +62,13 @@ console.log("Cleaning Previous Build")
 deleteFolderRecursive('build')
 fs.mkdirSync('build')
 
+
+
 walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
+
+  defaultstack = {}
+  stacks = {}
+  includeAll = {}
 
   templatename = 'build/'+path.basename(envfilename).slice(0,-7)
   env = deepmerge(commonenv, require(envfilename))
@@ -71,19 +77,43 @@ walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
   envHelpers = {}
   envHelpers[k] = v.bind(env) for k, v of helpers
 
-  template = {}
   walk(path.resolve(process.cwd(),'cloudformation'), matcher, (filename) ->
     sourceFile = require(filename)
     if sourceFile.CloudFormation?
       # console.log "- #{sourceFile.Name}"
       scfile = sourceFile.CloudFormation(env, envHelpers)
+
+      # Is there an output?
       if scfile?
-        prefixResourceNames(scfile,env.LogicalNamePrefix)
-        template = deepmerge(template, scfile)
+        prefixResourceNames(scfile, env.LogicalNamePrefix)
+
+        # Include In All Stacks?
+        if sourceFile.IncludeAll
+          includeAll = deepmerge(includeAll, scfile)
+
+        # Specific Stack?
+        if sourceFile.Stack
+          stacks[sourceFile.Stack] = deepmerge(stacks[sourceFile.Stack] || {}, scfile)
+        else
+          defaultstack = deepmerge(defaultstack, scfile)
   )
 
-  fs.writeFileSync(path.resolve(process.cwd(),templatename+'.json'), JSON.stringify(template, null, 2))
-  fs.writeFileSync(path.resolve(process.cwd(),templatename+'.yaml'), YAML.stringify(template, 2))
+
+
+  dir = path.resolve(process.cwd())
+
+  # Default stack
+  if Object.keys(defaultstack.Resources).length>0
+    fs.writeFileSync(path.join(dir,templatename+'.json'), JSON.stringify(defaultstack, null, 2))
+    fs.writeFileSync(path.join(dir,templatename+'.yaml'), YAML.stringify(defaultstack, 2))
+
+  for stack, template of stacks
+    continue if Object.keys(template.Resources).length == 0
+    # Merge IncludeAll
+    template = deepmerge(includeAll, template)
+
+    fs.writeFileSync(path.join(dir,templatename+'_'+stack+'.json'), JSON.stringify(template, null, 2))
+    fs.writeFileSync(path.join(dir,templatename+'_'+stack+'.yaml'), YAML.stringify(template, 2))
 )
 
 console.log("Done.")

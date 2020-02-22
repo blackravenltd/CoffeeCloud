@@ -1,5 +1,6 @@
 module.exports =
   Name: "Data Tier"
+  Stack: 'data'
   CloudFormation: (env, h) ->
     Resources:
       # Route Table & Route

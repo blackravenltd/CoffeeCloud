@@ -1,5 +1,6 @@
 module.exports =
   Name: "Network Access Control List (NACL)"
+  Stack: 'network'
   CloudFormation: (env,h) ->
     Resources:
       # The Environment Network ACL. We only use one, open ACL, security is handled by 

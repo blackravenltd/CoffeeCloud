@@ -1,5 +1,6 @@
 module.exports =
   Name: "VPC"
+  Stack: 'network'
   CloudFormation: (env) ->
     Resources:
       # The Environment VPC.

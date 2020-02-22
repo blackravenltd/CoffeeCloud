@@ -1,5 +1,6 @@
 module.exports =
   Name: "Web Tier"
+  Stack: 'web'
   CloudFormation: (env,h) ->
     Resources:
       # Route Table & Route

@@ -1,5 +1,6 @@
 module.exports =
   Name: 'Config S3 Storage'
+  Stack: 'storage'
   CloudFormation: (env,h) ->
     Resources:
       ConfigS3:
