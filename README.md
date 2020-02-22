@@ -91,7 +91,7 @@ module.exports =
   CloudFormation: (environment, helpers) ->
     Resources:
 
-      # Virtual pPrivate Cloud
+      # Virtual Private Cloud
       
       TestVPC:
         Type: 'AWS::EC2::VPC'
@@ -131,7 +131,7 @@ This file will cause all resources created in the corresponding CF template to h
 ```coffeescript
 module.exports =
   Name: 'Internet Gateway'
-  CloudFormation: (env,h) ->
+  CloudFormation: (env, h) ->
     Resources:
       # The Environment Internet Gateway.
       InternetGateway:
@@ -189,7 +189,7 @@ This feature is enabled by adding the `Stack` parameter to topology definition f
 module.exports =
   Name: "VPC"
   Stack: 'network'
-  CloudFormation: (params) ->
+  CloudFormation: (env, h) ->
     Resources:
 
       # The Environment VPC.
@@ -197,7 +197,7 @@ module.exports =
       TestVPC:
         Type: 'AWS::EC2::VPC'
         Properties:
-          CidrBlock:          params.VPCCIDR
+          CidrBlock:          env.VPCCIDR
           EnableDnsSupport:   true
           EnableDnsHostnames: true
           InstanceTenancy:    'default'
