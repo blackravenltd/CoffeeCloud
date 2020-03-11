@@ -2,59 +2,39 @@ module.exports =
   Name: "Data Tier"
   Stack: 'data'
   CloudFormation: (env, h) ->
-    Resources:
+    t =
       # Route Table & Route
-
       DataRouteTable:
         Type: 'AWS::EC2::RouteTable'
         Properties:
           VpcId: Ref: h.ref('VPC')
           Tags: [ { Key: 'Name', Value: 'NACL'} ]
 
-      # Subnets 
-      
-      DataSubnetA:
-        Type: 'AWS::EC2::Subnet'
-        Properties:
-          VpcId:                Ref: h.ref('VPC')
-          AvailabilityZone:     env.AvailibilityZones[0]
-          CidrBlock:            env.DataTierCIDR[0]
-          MapPublicIpOnLaunch:  false
-          Tags: [ { Key: 'Name', Value: 'Data A'} ]
+    for az, i in env.AvailibilityZones
 
-      DataSubnetB:
+      t['DataSubnet'+i] = 
         Type: 'AWS::EC2::Subnet'
         Properties:
           VpcId:                Ref: h.ref('VPC')
-          AvailabilityZone:     env.AvailibilityZones[1]
-          CidrBlock:            env.DataTierCIDR[1]
-          MapPublicIpOnLaunch: false
-          Tags: [ { Key: 'Name', Value: 'Data B'} ]
+          AvailabilityZone:     env.AvailibilityZones[i]
+          CidrBlock:            env.DataTierCIDR[i]
+          MapPublicIpOnLaunch:  false
+          Tags: [ { Key: 'Name', Value: 'Data '+i } ]
 
       # Subnet ACL Associations
 
-      DataSubnetANetworkACLAssociation:
+      t['DataSubnet'+i+'NetworkACLAssociation'] = 
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: h.ref('DataSubnetA')
-          NetworkAclId: Ref: h.ref('NACL')
-
-      DataSubnetBNetworkACLAssociation:
-        Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-        Properties:
-          SubnetId:     Ref: h.ref('DataSubnetB')
+          SubnetId:     Ref: h.ref('DataSubnet'+i)
           NetworkAclId: Ref: h.ref('NACL')
 
       # Subnet Route Table Associations
 
-      DataSubnetARouteTableAssociation:
+      t['DataSubnet'+i+'RouteTableAssociation'] = 
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: h.ref('DataSubnetA')
+          SubnetId:     Ref: h.ref('DataSubnet'+i)
           RouteTableId: Ref: h.ref('DataRouteTable')
 
-      DataSubnetBRouteTableAssociation:
-        Type: 'AWS::EC2::SubnetRouteTableAssociation'
-        Properties:
-          SubnetId:     Ref: h.ref('DataSubnetB')
-          RouteTableId: Ref: h.ref('DataRouteTable')
+    return { Resources: t }

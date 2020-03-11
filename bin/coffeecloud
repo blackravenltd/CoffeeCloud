@@ -7,7 +7,18 @@ deepmerge = require 'deepmerge'
 YAML = require('yamljs')
 
 build = require path.resolve(__dirname,'../package.json')
+
+
+optionDefinitions = [
+  { name: 'disable-stacks', alias: 's', type: Boolean },
+  { name: 'help', alias: 's', type: Boolean },
+]
+
+commandLineArgs = require('command-line-args')
+options = commandLineArgs(optionDefinitions)
  
+useStacks = !options['disable-stacks']
+
 walk = (dir, f_match, f_visit) ->
   _walk = (dir) ->
     return if fs.existsSync(dir+'/.ignore') 
@@ -62,8 +73,6 @@ console.log("Cleaning Previous Build")
 deleteFolderRecursive('build')
 fs.mkdirSync('build')
 
-
-
 walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
 
   defaultstack = {}
@@ -92,7 +101,7 @@ walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
           includeAll = deepmerge(includeAll, scfile)
 
         # Specific Stack?
-        if sourceFile.Stack
+        if useStacks && sourceFile.Stack
           stacks[sourceFile.Stack] = deepmerge(stacks[sourceFile.Stack] || {}, scfile)
         else
           defaultstack = deepmerge(defaultstack, scfile)
