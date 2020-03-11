@@ -25,7 +25,7 @@ module.exports =
         Type: "AWS::EC2::Subnet"
         Properties:
           VpcId:                Ref: h.ref("VPC")
-          AvailabilityZone:     env.AvailibilityZones[i]
+          AvailabilityZone:     env.AvailabilityZones[i]
           CidrBlock:            env.PublicTierCIDR[i]
           MapPublicIpOnLaunch:  false
           Tags: [ { Key: "Name", Value: env.ProjectName+env.Name+"-public-subnet-"+i} ]

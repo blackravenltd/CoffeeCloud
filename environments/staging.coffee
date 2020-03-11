@@ -5,7 +5,9 @@ module.exports =
 
   VPCCIDR: '10.1.0.0/16'
 
-  AvailibilityZones:  [ 'ap-southeast-2a',  'ap-southeast-2b' ]
+  # This Staging Environment spans 2 Availability Zones
+
+  AvailabilityZones:  [ 'ap-southeast-2a',  'ap-southeast-2b' ]
 
   PublicTierCIDR:     [ '10.1.0.0/24',  '10.1.1.0/24' ]
   WebTierCIDR:        [ '10.1.10.0/24', '10.1.11.0/24' ]

@@ -11,7 +11,7 @@ build = require path.resolve(__dirname,'../package.json')
 
 optionDefinitions = [
   { name: 'disable-stacks', alias: 's', type: Boolean },
-  { name: 'help', alias: 's', type: Boolean },
+  { name: 'help', alias: 'h', type: Boolean },
 ]
 
 commandLineArgs = require('command-line-args')

@@ -51,7 +51,7 @@ module.exports =
 
   VPCCIDR: '10.0.0.0/16'
 
-  AvailibilityZones:  [ 'ap-southeast-2a',  'ap-southeast-2b' ]
+  AvailabilityZones:  [ 'ap-southeast-2a',  'ap-southeast-2b' ]
 
   WebCIDR:        [ '10.0.1.0/24',  '10.0.2.0/24' ]
   DataCIDR:       [ '10.0.20.0/24', '10.0.21.0/24' ]

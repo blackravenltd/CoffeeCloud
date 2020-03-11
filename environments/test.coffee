@@ -5,7 +5,9 @@ module.exports =
 
   VPCCIDR: '10.0.0.0/16'
 
-  AvailibilityZones:  [ 'ap-southeast-2a' ]
+  # This Test Environment requires only a single Availability Zones
+
+  AvailabilityZones:  [ 'ap-southeast-2a' ]
 
   PublicTierCIDR:     [ '10.0.0.0/24' ]
   WebTierCIDR:        [ '10.0.10.0/24' ]

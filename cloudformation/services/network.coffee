@@ -17,7 +17,7 @@ module.exports =
         Type: 'AWS::EC2::Subnet'
         Properties:
           VpcId:                Ref: h.ref('VPC')
-          AvailabilityZone:     env.AvailibilityZones[0]
+          AvailabilityZone:     env.AvailabilityZones[0]
           CidrBlock:            env.ServicesTierCIDR[0]
           MapPublicIpOnLaunch:  false
           Tags: [ { Key: 'Name', Value: 'Services A'} ]
@@ -26,7 +26,7 @@ module.exports =
         Type: 'AWS::EC2::Subnet'
         Properties:
           VpcId: Ref: h.ref('VPC')
-          AvailabilityZone:     env.AvailibilityZones[1]
+          AvailabilityZone:     env.AvailabilityZones[1]
           CidrBlock:            env.ServicesTierCIDR[1]
           MapPublicIpOnLaunch: false
           Tags: [ { Key: 'Name', Value: 'Services B'} ]

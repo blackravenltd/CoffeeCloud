@@ -5,7 +5,9 @@ module.exports =
 
   VPCCIDR: '10.2.0.0/16'
 
-  AvailibilityZones:  [ 'ap-southeast-2a',  'ap-southeast-2b',  'ap-southeast-2b' ]
+  # This Production Environment spans 3 Availability Zones
+
+  AvailabilityZones:  [ 'ap-southeast-2a',  'ap-southeast-2b',  'ap-southeast-2c' ]
 
   PublicTierCIDR:     [ '10.2.0.0/24',  '10.2.1.0/24',  '10.2.2.0/24'  ]
   WebTierCIDR:        [ '10.2.10.0/24', '10.2.11.0/24', '10.2.12.0/24' ]
