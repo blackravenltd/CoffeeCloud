@@ -19,6 +19,9 @@ module.exports =
           DestinationCidrBlock: env.PublicCIDR
           GatewayId:            Ref: h.ref("InternetGateway")
 
+    # An example of a dynamic template. This code creates a subnet in each configured
+    # Availability Zone
+
     for cidr, i in env.PublicTierCIDR
       # Subnets
       template["PublicSubnet"+i] =

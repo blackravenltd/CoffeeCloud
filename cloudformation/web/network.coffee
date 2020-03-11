@@ -1,10 +1,10 @@
 module.exports =
-  Name: "Services Tier"
-  Stack: 'services'
+  Name: "Web Tier"
+  Stack: 'web'
   CloudFormation: (env, h) ->
     template =
       # Route Table & Route
-      ServicesRouteTable:
+      WebRouteTable:
         Type: 'AWS::EC2::RouteTable'
         Properties:
           VpcId: Ref: h.ref('VPC')
@@ -16,27 +16,27 @@ module.exports =
     for _, i in env.AvailabilityZones
 
       # Subnet
-      template['ServicesSubnet'+i] = 
+      template['WebSubnet'+i] = 
         Type: 'AWS::EC2::Subnet'
         Properties:
           VpcId:                Ref: h.ref('VPC')
           AvailabilityZone:     env.AvailabilityZones[i]
-          CidrBlock:            env.ServicesTierCIDR[i]
+          CidrBlock:            env.WebTierCIDR[i]
           MapPublicIpOnLaunch:  false
-          Tags: [ { Key: 'Name', Value: 'Services '+i } ]
+          Tags: [ { Key: 'Name', Value: 'Web '+i } ]
 
       # Subnet ACL Associations
-      template['ServicesSubnet'+i+'NetworkACLAssociation'] = 
+      template['WebSubnet'+i+'NetworkACLAssociation'] = 
         Type: 'AWS::EC2::SubnetNetworkAclAssociation'
         Properties:
-          SubnetId:     Ref: h.ref('ServicesSubnet'+i)
+          SubnetId:     Ref: h.ref('WebSubnet'+i)
           NetworkAclId: Ref: h.ref('NACL')
 
       # Subnet Route Table Associations
-      template['ServicesSubnet'+i+'RouteTableAssociation'] = 
+      template['WebSubnet'+i+'RouteTableAssociation'] = 
         Type: 'AWS::EC2::SubnetRouteTableAssociation'
         Properties:
-          SubnetId:     Ref: h.ref('ServicesSubnet'+i)
-          RouteTableId: Ref: h.ref('ServicesRouteTable')
+          SubnetId:     Ref: h.ref('WebSubnet'+i)
+          RouteTableId: Ref: h.ref('WebRouteTable')
 
     return { Resources: template }
