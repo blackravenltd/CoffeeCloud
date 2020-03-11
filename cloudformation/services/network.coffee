@@ -4,15 +4,17 @@ module.exports =
   CloudFormation: (env,h) ->
     Resources:
       # Route Table & Route
-
       ServicesRouteTable:
         Type: 'AWS::EC2::RouteTable'
         Properties:
           VpcId: Ref: h.ref('VPC')
           Tags: [ { Key: 'Name', Value: 'NACL'} ]
 
+
+      # An example of a static template. This code creates two subnets in the first and second
+      # Availability zones.
+
       # Subnets
-      
       ServicesSubnetA:
         Type: 'AWS::EC2::Subnet'
         Properties:

@@ -107,8 +107,6 @@ walk(path.resolve(process.cwd(),'environments'),matcher,(envfilename) ->
           defaultstack = deepmerge(defaultstack, scfile)
   )
 
-
-
   dir = path.resolve(process.cwd())
 
   # Default stack
