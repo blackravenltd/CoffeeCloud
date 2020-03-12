@@ -147,7 +147,7 @@ module.exports =
           VpcId:              Ref: h.ref('VPC')
 ```
 
-When processed, the actual definitions will be named `TestInternetGateway` and `InternetGatewayVPCAttachment`:
+When processed, the actual definitions will be named `TestInternetGateway` and `TestInternetGatewayVPCAttachment`:
 
 ```json
     ...
