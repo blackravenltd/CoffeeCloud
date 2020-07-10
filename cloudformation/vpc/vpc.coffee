@@ -4,6 +4,7 @@ module.exports =
   CloudFormation: (env) ->
     Resources:
       # The Environment VPC.
+      
       VPC:
         Type: 'AWS::EC2::VPC'
         Properties:

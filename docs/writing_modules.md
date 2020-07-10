@@ -27,16 +27,18 @@ Typically, a module will contain entities from [The AWS Template Reference](http
 
 ```coffeescript
 module.exports = 
-  Parameters: 
-    InstanceTypeParameter:
-      Type: 'String'
-      Default: 't1.micro'
-      AllowedValues: [
-        't1.micro'
-        'm1.small'
-        'm1.large'
-      ]
-      Description: 'Enter t1.micro, m1.small, or m1.large. Default is t1.micro.'
+  Name: "Instance Type Parameter"
+  CloudFormation: (params) ->
+    Parameters: 
+      InstanceTypeParameter:
+        Type: 'String'
+        Default: 't1.micro'
+        AllowedValues: [
+          't1.micro'
+          'm1.small'
+          'm1.large'
+        ]
+        Description: 'Enter t1.micro, m1.small, or m1.large. Default is t1.micro.'
 ```
 
 Usually, many modules will make up a complete template. Each module exports an object with the following properties:

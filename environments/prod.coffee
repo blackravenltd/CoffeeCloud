@@ -1,7 +1,7 @@
 module.exports = 
-  Name: 'Prod Environment'
-  Description: 'CloudFormation Template for Prod Environment, AWS ap-southeast-2'
-  LogicalNamePrefix:    'Prod'
+  Name: 'Production Environment'
+  Description: 'CloudFormation Template for Production Environment, AWS ap-southeast-2'
+  LogicalNamePrefix:    'Production'
 
   VPCCIDR: '10.2.0.0/16'
 

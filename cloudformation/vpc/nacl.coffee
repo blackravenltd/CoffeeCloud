@@ -5,13 +5,14 @@ module.exports =
     Resources:
       # The Environment Network ACL. We only use one, open ACL, security is handled by 
       # Security Groups.
+      
       NACL:
         Type: 'AWS::EC2::NetworkAcl'
         Properties:
           VpcId: Ref: h.ref('VPC')
           Tags: [ { Key: 'Name', Value: 'NACL'} ]
 
-      # Allow-all Ingress Entry
+      # Allow-all Ingress
       NACLIngress:
         Type: 'AWS::EC2::NetworkAclEntry'
         Properties:
@@ -25,7 +26,7 @@ module.exports =
             Code: -1
             Type: -1
       
-      # Allow-all Egress Entry
+      # Allow-all Egress
       NACLEgress:
         Type: 'AWS::EC2::NetworkAclEntry'
         Properties:
