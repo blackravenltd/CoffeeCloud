@@ -15,7 +15,7 @@
     "coffee-script": "1.10.0",
     "command-line-args": "^5.1.1",
     "deepmerge": "0.2.10",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "underscore": "1.8.3",
     "yamljs": "^0.3.0"
   },
